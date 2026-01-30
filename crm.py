@@ -1,16 +1,14 @@
 import streamlit as st
 import pandas as pd
-from streamlit_gsheets import GSheetsConnections
+from streamlit_gsheets import GSheetsConnection
 
 st.set_page_config(page_title="Community CRM", layout="wide")
 st.title("🚀 Business Emotion CRM - Online")
 
-# QUI INCOLLERAI IL TUO LINK TRA LE VIRGOLETTE
-url = "https://docs.google.com/spreadsheets/d/1wpul6Y_H09Jfk7O0S41PtwDlh1wEtiPF1fRG6RsXSao/edit?usp=sharing"
+url = "https://docs.google.com/spreadsheets/d/1vpu16Y_H093fk708541Ptw01h1wEt1PF1FRG6RsXSao/edit?usp=sharing"
 
-conn = st.connection("gsheets", type=GSheetConnection)
+conn = st.connection("gsheets", type=GSheetsConnection)
 
-# Caricamento dati
 try:
     df = conn.read(spreadsheet=url)
 except:
@@ -24,23 +22,19 @@ with st.sidebar:
     
     if st.button("➕ SALVA NEL CLOUD"):
         if nome:
-            nuovo_contatto = pd.DataFrame([[nome, mercato, emozione]], columns=["Nome", "Mercato", "Emozione"])
-            updated_df = pd.concat([df, nuovo_contatto], ignore_index=True)
+            nuovo = pd.DataFrame([[nome, mercato, emozione]], columns=["Nome", "Mercato", "Emozione"])
+            updated_df = pd.concat([df, nuovo], ignore_index=True)
             conn.update(spreadsheet=url, data=updated_df)
-            st.success("Dati salvati sul Cloud!")
+            st.success("Dati salvati!")
             st.rerun()
 
-# Visualizzazione Tabelle
 col1, col2, col3 = st.columns(3)
-col1.error("❄️ FREDDO")
-col1.table(df[df["Mercato"] == "Freddo"])
-
-col2.warning("🔥 TIEPIDO")
-col2.table(df[df["Mercato"] == "Tiepido"])
-
-col3.success("☀️ CALDO")
-col3.table(df[df["Mercato"] == "Caldo"])
-
-
-
-
+with col1:
+    st.error("❄️ FREDDO")
+    st.table(df[df["Mercato"] == "Freddo"])
+with col2:
+    st.warning("🔥 TIEPIDO")
+    st.table(df[df["Mercato"] == "Tiepido"])
+with col3:
+    st.success("☀️ CALDO")
+    st.table(df[df["Mercato"] == "Caldo"])
