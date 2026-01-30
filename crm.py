@@ -5,7 +5,7 @@ from streamlit_gsheets import GSheetsConnection
 st.set_page_config(page_title="Community CRM", layout="wide")
 st.title("🚀 Business Emotion CRM - Online")
 
-url = "https://docs.google.com/spreadsheets/d/1vpu16Y_H093fk708541Ptw01h1wEt1PF1FRG6RsXSao/edit?usp=sharing"
+url = "https://docs.google.com/spreadsheets/d/1wpul6Y_H09Jfk7O0S41PtwDlh1wEtiPF1fRG6RsXSao/edit?usp=sharing"
 
 conn = st.connection("gsheets", type=GSheetsConnection)
 
@@ -38,3 +38,4 @@ with col2:
 with col3:
     st.success("☀️ CALDO")
     st.table(df[df["Mercato"] == "Caldo"])
+
