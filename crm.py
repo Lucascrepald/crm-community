@@ -1,22 +1,20 @@
 import streamlit as st
 import pandas as pd
-import os
+from streamlit_gsheets import GSheetConnection
 
 st.set_page_config(page_title="Community CRM", layout="wide")
-st.title("🚀 Business Emotion CRM - Community Edition")
+st.title("🚀 Business Emotion CRM - Online")
 
-# Nome del file dove verranno salvati i dati
-DB_FILE = "database_crm.csv"
+# QUI INCOLLERAI IL TUO LINK TRA LE VIRGOLETTE
+url = "https://docs.google.com/spreadsheets/d/1wpul6Y_H09Jfk7O0S41PtwDlh1wEtiPF1fRG6RsXSao/edit?usp=sharing"
 
-# Funzione per caricare i dati dal file
-def carica_dati():
-    if os.path.exists(DB_FILE):
-        return pd.read_csv(DB_FILE)
-    return pd.DataFrame(columns=["Nome", "Mercato", "Emozione"])
+conn = st.connection("gsheets", type=GSheetConnection)
 
-# Inizializziamo i dati prendendoli dal file
-if 'agenda' not in st.session_state:
-    st.session_state.agenda = carica_dati()
+# Caricamento dati
+try:
+    df = conn.read(spreadsheet=url)
+except:
+    df = pd.DataFrame(columns=["Nome", "Mercato", "Emozione"])
 
 with st.sidebar:
     st.header("👤 Nuovo Contatto")
@@ -24,29 +22,22 @@ with st.sidebar:
     mercato = st.selectbox("Tipo Mercato", ["Freddo", "Tiepido", "Caldo"])
     emozione = st.selectbox("Colore Emozione", ["🔴 Rosso", "🟡 Giallo", "🟢 Verde", "🔵 Blu"])
     
-    if st.button("➕ SALVA NEL DATABASE"):
+    if st.button("➕ SALVA NEL CLOUD"):
         if nome:
-            nuovo = pd.DataFrame([[nome, mercato, emozione]], columns=["Nome", "Mercato", "Emozione"])
-            # Aggiorna la memoria dell'app
-            st.session_state.agenda = pd.concat([st.session_state.agenda, nuovo], ignore_index=True)
-            # Salva fisicamente sul file CSV
-            st.session_state.agenda.to_csv(DB_FILE, index=False)
-            st.success(f"Salvato e archiviato!")
+            nuovo_contatto = pd.DataFrame([[nome, mercato, emozione]], columns=["Nome", "Mercato", "Emozione"])
+            updated_df = pd.concat([df, nuovo_contatto], ignore_index=True)
+            conn.update(spreadsheet=url, data=updated_df)
+            st.success("Dati salvati sul Cloud!")
+            st.rerun()
 
-# Visualizzazione colonne
-st.markdown("---")
+# Visualizzazione Tabelle
 col1, col2, col3 = st.columns(3)
+col1.error("❄️ FREDDO")
+col1.table(df[df["Mercato"] == "Freddo"])
 
-def mostra_tabella(tipo, colonna, colore_box):
-    dati_filtrati = st.session_state.agenda[st.session_state.agenda["Mercato"] == tipo]
-    colonna.markdown(f"### {colore_box} {tipo.upper()}")
-    colonna.table(dati_filtrati[["Nome", "Emozione"]])
+col2.warning("🔥 TIEPIDO")
+col2.table(df[df["Mercato"] == "Tiepido"])
 
-mostra_tabella("Freddo", col1, "❄️")
-mostra_tabella("Tiepido", col2, "🔥")
-mostra_tabella("Caldo", col3, "☀️")
-
-# Tasto per scaricare tutto in Excel/CSV
-st.sidebar.markdown("---")
-csv = st.session_state.agenda.to_csv(index=False).encode('utf-8')
-st.sidebar.download_button("📥 Scarica Database (Excel)", csv, "database_crm.csv", "text/csv")
+col3.success("☀️ CALDO")
+col3.table(df[df["Mercato"] == "Caldo"])
+Non ce n'è
