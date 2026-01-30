@@ -1,13 +1,13 @@
 import streamlit as st
 import pandas as pd
-from streamlit_gsheets import GSheetssConnection
+from streamlit_gsheetss import GSheetsConnection
 
 st.set_page_config(page_title="Community CRM", layout="wide")
 st.title("🚀 Business Emotion CRM - Online")
 
 url = "https://docs.google.com/spreadsheets/d/1vpu16Y_H093fk708541Ptw01h1wEt1PF1FRG6RsXSao/edit?usp=sharing"
 
-conn = st.connection("gsheets", type=GSheetssConnection)
+conn = st.connection("gsheetss", type=GSheetsConnection)
 
 # Lettura dati sicura
 try:
@@ -42,4 +42,5 @@ with col2:
 with col3:
     st.success("☀️ CALDO")
     st.dataframe(df[df["Mercato"] == "Caldo"])
+
 
