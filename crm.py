@@ -40,4 +40,5 @@ col2.table(df[df["Mercato"] == "Tiepido"])
 
 col3.success("☀️ CALDO")
 col3.table(df[df["Mercato"] == "Caldo"])
-Non ce n'è
+
+
