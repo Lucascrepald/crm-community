@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from streamlit_gsheets import GSheetsConnection
+from streamlit_gsheets import GSheetsConnections
 
 st.set_page_config(page_title="Community CRM", layout="wide")
 st.title("🚀 Business Emotion CRM - Online")
@@ -40,6 +40,7 @@ col2.table(df[df["Mercato"] == "Tiepido"])
 
 col3.success("☀️ CALDO")
 col3.table(df[df["Mercato"] == "Caldo"])
+
 
 
 
